@@ -22,7 +22,7 @@ func main() {
 	router := chi.NewRouter()
 	router.Post("/message", createMessage)
 	router.Get("/message/{id}", getMessage)
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8070", router)
 
 }
 
@@ -35,16 +35,25 @@ func createMessage(writer http.ResponseWriter, request *http.Request) {
 	id := id{
 		Id: stringId,
 	}
-	text, _ := json.Marshal(id)
-	writer.Header().Set("Content-type", "application/json")
-	writer.Write(text)
+	text, err := json.Marshal(id)
+	if err == nil {
+		writer.Header().Set("Content-type", "application/json")
+		writer.Write(text)
+	} else {
+		fmt.Println(err)
+	}
 
 }
 
 func getMessage(writer http.ResponseWriter, request *http.Request) {
 	id := chi.URLParam(request, "id")
 	message := messages[id]
-	text, _ := json.Marshal(message)
-	writer.Header().Set("Content-type", "application/json")
-	writer.Write(text)
+	text, err := json.Marshal(message)
+	if err == nil {
+		writer.Header().Set("Content-type", "application/json")
+		writer.Write(text)
+	} else {
+		fmt.Println(err)
+	}
+
 }
